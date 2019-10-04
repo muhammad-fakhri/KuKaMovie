@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">KuKaMovie</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
 
     <string name="tv_shows">TV Shows</string>
     <string name="movies">Movies</string>
@@ -51,7 +48,6 @@
     <string name="set_release_reminder_on">Today Release Reminder ON</string>
     <string name="set_release_reminder_off">Today Release Reminder OFF</string>
     <string name="appwidget_text">FAVORITE</string>
-    <string name="add_widget">Add widget</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>
