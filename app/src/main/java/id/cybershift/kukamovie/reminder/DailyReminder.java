@@ -30,16 +30,16 @@ public class DailyReminder extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String title = context.getString(R.string.app_name);
         String message = context.getString(R.string.msg_daily);
-        showAlarmNotification(context, title, message, NOTIFICATION_ID);
+        showAlarmNotification(context, title, message);
     }
 
-    private void showAlarmNotification(Context context, String title, String message, int notifId) {
+    private void showAlarmNotification(Context context, String title, String message) {
         String CHANNEL_ID = "Channel_1";
         String CHANNEL_NAME = "Daily Reminder Channel";
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, notifId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
@@ -63,7 +63,7 @@ public class DailyReminder extends BroadcastReceiver {
         }
 
         Notification notification = builder.build();
-        notificationManager.notify(notifId, notification);
+        notificationManager.notify(NOTIFICATION_ID, notification);
     }
 
     public void setRepeatingAlarm(Context context) {

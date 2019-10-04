@@ -21,6 +21,8 @@ import id.cybershift.kukamovie.fragment.TVShowFragment;
 import id.cybershift.kukamovie.search.SearchResultActivity;
 import id.cybershift.kukamovie.setting.SettingActivity;
 
+import static id.cybershift.kukamovie.reminder.ReleaseReminderService.notifId;
+import static id.cybershift.kukamovie.reminder.ReleaseReminderService.stackNotif;
 import static id.cybershift.kukamovie.search.SearchResultActivity.EXTRA_QUERY;
 import static id.cybershift.kukamovie.search.SearchResultActivity.EXTRA_TYPE;
 
@@ -124,5 +126,12 @@ public class MainActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setSubtitle(title);
         }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        stackNotif.clear();
+        notifId = 0;
     }
 }

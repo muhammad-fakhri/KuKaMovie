@@ -23,8 +23,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import id.cybershift.kukamovie.MainActivity;
@@ -34,7 +36,12 @@ import id.cybershift.kukamovie.entity.Movie;
 import static id.cybershift.kukamovie.BuildConfig.API_KEY;
 
 public class ReleaseReminderService extends JobService {
-    private static int notifId = 100;
+    public static int notifId = 0;
+    public static final List<Movie> stackNotif = new ArrayList<>();
+    private final static int NOTIFICATION_REQUEST_CODE = 200;
+    private final static String GROUP_KEY_MOVIES = "group_key_movies";
+    private static final int MAX_NOTIFICATION = 2;
+    private static final CharSequence CHANNEL_NAME = "kukamovie channel";
 
     @Override
     public boolean onStartJob(JobParameters job) {
@@ -62,11 +69,15 @@ public class ReleaseReminderService extends JobService {
                     JSONObject responseObject = new JSONObject(result);
                     JSONArray list = responseObject.getJSONArray("results");
 
-                    JSONObject movie = list.getJSONObject(0);
-                    Movie movieItem = new Movie(movie);
-                    String title = movieItem.getTitle();
-                    String message = movieItem.getTitle() + " Rilis Hari ini";
-                    showAlarmNotification(getApplicationContext(), title, message, notifId);
+                    for (int i = 0; i < list.length(); i++) {
+                        JSONObject movie = list.getJSONObject(i);
+                        Movie movieItem = new Movie(movie);
+                        stackNotif.add(movieItem);
+                        String title = movieItem.getTitle();
+                        String message = movieItem.getTitle() + " Rilis Hari ini";
+                        sendNotifications(getApplicationContext(), title, message, notifId);
+                        notifId++;
+                    }
 
                     jobFinished(job, false);
                 } catch (Exception e) {
@@ -82,34 +93,62 @@ public class ReleaseReminderService extends JobService {
         });
     }
 
-    private void showAlarmNotification(Context context, String title, String message, int notifId) {
+    private void sendNotifications(Context context, String title, String message, int notifId) {
         String CHANNEL_ID = "Channel_2";
-        String CHANNEL_NAME = "Release Reminder Channel";
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, notifId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_local_movies_24dp)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setContentIntent(pendingIntent)
-                .setColor(ContextCompat.getColor(context, android.R.color.transparent))
-                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
-                .setSound(alarmSound);
+        NotificationCompat.Builder builder;
+
+        if (notifId < MAX_NOTIFICATION) {
+            builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_local_movies_24dp)
+                    .setContentTitle(title)
+                    .setContentText(message)
+                    .setContentIntent(pendingIntent)
+                    .setColor(ContextCompat.getColor(context, android.R.color.transparent))
+                    .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+                    .setSound(alarmSound);
+        } else {
+            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle()
+                    .addLine(stackNotif.get(notifId).getTitle() + " Rilis Hari Ini")
+                    .addLine(stackNotif.get(notifId - 1).getTitle() + " Rilis Hari Ini")
+                    .setBigContentTitle(notifId + " film baru yang rilis hari ini")
+                    .setSummaryText("Film Rilis Hari Ini");
+            builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.ic_local_movies_24dp)
+                    .setContentTitle(title)
+                    .setContentText(message)
+                    .setGroup(GROUP_KEY_MOVIES)
+                    .setGroupSummary(true)
+                    .setContentIntent(pendingIntent)
+                    .setStyle(inboxStyle)
+                    .setColor(ContextCompat.getColor(context, android.R.color.transparent))
+                    .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
+                    .setSound(alarmSound);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
             channel.enableVibration(true);
             channel.setVibrationPattern(new long[]{1000, 1000, 1000, 1000, 1000});
-
             builder.setChannelId(CHANNEL_ID);
-            notificationManager.createNotificationChannel(channel);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
         }
 
         Notification notification = builder.build();
-        notificationManager.notify(notifId, notification);
+        if (notificationManager != null) {
+            notificationManager.notify(notifId, notification);
+        }
     }
 }

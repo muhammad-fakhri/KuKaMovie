@@ -46,10 +46,10 @@
         <Button
             android:id="@+id/change_language_settings"
             android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_height="match_parent"
             android:text="@string/change_language_settings" />
     </LinearLayout>
 

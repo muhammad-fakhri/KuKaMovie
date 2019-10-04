@@ -73,7 +73,7 @@ public class MainViewModel extends ViewModel {
         }
         AsyncHttpClient client = new AsyncHttpClient();
         final ArrayList<TVShow> tvlistItems = new ArrayList<>();
-        String url = "https://api.themoviedb.org/3/tv/popular?api_key=" + API_KEY + "&language="+lang+"&page=1";
+        String url = "https://api.themoviedb.org/3/tv/popular?api_key=" + API_KEY + "&language=" + lang + "&page=1";
         client.get(url, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

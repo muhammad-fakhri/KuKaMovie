@@ -21,7 +21,7 @@ import id.cybershift.kukamovie.R;
 
 public class ReleaseReminder extends BroadcastReceiver {
     private static int notifId = 100;
-    FirebaseJobDispatcher mDispatcher;
+    FirebaseJobDispatcher dispatcher;
     private String DISPATCHER_TAG = "mydispatcher";
 
     public ReleaseReminder() {
@@ -29,12 +29,12 @@ public class ReleaseReminder extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        mDispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
+        dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(context));
         startDispacher();
     }
 
     private void startDispacher() {
-        Job job = mDispatcher.newJobBuilder()
+        Job job = dispatcher.newJobBuilder()
                 .setService(ReleaseReminderService.class)
                 .setTag(DISPATCHER_TAG)
                 .setRecurring(false)
@@ -47,11 +47,11 @@ public class ReleaseReminder extends BroadcastReceiver {
                 )
                 .build();
 
-        mDispatcher.mustSchedule(job);
+        dispatcher.mustSchedule(job);
     }
 
     private void stopDispacher() {
-        mDispatcher.cancel(DISPATCHER_TAG);
+        dispatcher.cancel(DISPATCHER_TAG);
     }
 
     public void setAlarmRelease(Context context) {
@@ -71,6 +71,7 @@ public class ReleaseReminder extends BroadcastReceiver {
     }
 
     public void cancelAlarm(Context context) {
+//        stopDispacher();
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, ReleaseReminder.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, notifId, intent, 0);

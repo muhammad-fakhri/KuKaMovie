@@ -49,6 +49,14 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
         return data.size();
     }
 
+    public void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
+        this.onItemClickCallback = onItemClickCallback;
+    }
+
+    public interface OnItemClickCallback {
+        void onItemClicked(Favorite data);
+    }
+
     public class FavoriteViewHolder extends RecyclerView.ViewHolder {
         ImageView imgPoster;
         TextView tvName, tvDescription;
@@ -76,13 +84,5 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
                 }
             });
         }
-    }
-
-    public void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
-        this.onItemClickCallback = onItemClickCallback;
-    }
-
-    public interface OnItemClickCallback {
-        void onItemClicked(Favorite data);
     }
 }
