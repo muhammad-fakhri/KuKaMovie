@@ -3,4 +3,55 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="tv_shows">TV Shows</string>
+    <string name="movies">Movies</string>
+    <string name="home">Home</string>
+    <string name="movie_name">Movie Name</string>
+    <string name="movie_description">Movie Description</string>
+    <string name="movie_poster_description">Poster of the movie</string>
+    <string name="movie_page_title">Movie Catalogue</string>
+    <string name="favorite_page_title">Favorite</string>
+    <string name="tvshow_page_title">TV Show Catalogue</string>
+    <string name="movie_year">Release Year</string>
+    <string name="movie_rate">Rate</string>
+    <string name="change_language_settings">Change Language Settings</string>
+    <string name="lorem_rate">Lorem Rate</string>
+    <string name="lorem_year">Lorem Year</string>
+    <string name="tvshow_poster_description">Poster of the TV Show</string>
+    <string name="tvshow_name">TV Show Name</string>
+    <string name="tvshow_description">TV Show Description</string>
+    <string name="favorite">Favorite</string>
+    <string name="favorite_description">Favorite Description</string>
+    <string name="favorite_name">Favorite Name</string>
+    <string name="poster_of_the_favorite_item">Poster of the favorite item</string>
+    <string name="favorite_toast_success">Favorite Success</string>
+    <string name="favorite_toast_fail">Favorite fail</string>
+    <string name="unfavorite_toast_success">Unfavorite success</string>
+    <string name="unfavorite_toast_fail">Unfavorite fail</string>
+    <string name="title_search">Search</string>
+    <string name="title_setting">Setting</string>
+    <string name="release_reminder">Release Today Reminder</string>
+    <string name="daily_reminder">Daily Reminder</string>
+    <string name="search_not_found">Not Found</string>
+    <string name="search_name">Search Result Name</string>
+    <string name="search_description">Search Result Description</string>
+    <string name="search_poster">Poster of the search result</string>
+    <string name="search_result_movie">Movie Search Result</string>
+
+    <string name="empty_text">NO DATA</string>
+    <string name="msg_daily">Daily Message</string>
+    <string name="the_poster_of_favorited_image">The poster of favorited image</string>
+    <string name="Setting">Settings</string>
+    <string name="movie_favorite_is_empty">Movie favorite is empty</string>
+    <string name="tvshow_favorite_is_empty">TVShow favorite is empty</string>
+    <string name="search_result_tvshow">TV Show Search Result</string>
+    <string name="set_daily_reminder_success">Daily Reminder ON</string>
+    <string name="set_daily_reminder_off">Daily Reminder OFF</string>
+    <string name="set_release_reminder_on">Today Release Reminder ON</string>
+    <string name="set_release_reminder_off">Today Release Reminder OFF</string>
+    <string name="appwidget_text">FAVORITE</string>
+    <string name="add_widget">Add widget</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
 </resources>
