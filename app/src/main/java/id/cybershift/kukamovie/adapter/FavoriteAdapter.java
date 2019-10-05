@@ -20,7 +20,7 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.Favori
     private ArrayList<Favorite> data = new ArrayList<>();
     private FavoriteAdapter.OnItemClickCallback onItemClickCallback;
 
-    public ArrayList<Favorite> getListNotes() {
+    public ArrayList<Favorite> getListFavorites() {
         return data;
     }
 

@@ -7,6 +7,17 @@ import android.util.Log;
 import org.json.JSONObject;
 
 public class Movie implements Parcelable {
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
     private int id;
     private String title;
     private String overview;
@@ -38,18 +49,6 @@ public class Movie implements Parcelable {
         year = in.readString();
         poster = in.readString();
     }
-
-    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
-        @Override
-        public Movie createFromParcel(Parcel in) {
-            return new Movie(in);
-        }
-
-        @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
 
     public int getId() {
         return id;

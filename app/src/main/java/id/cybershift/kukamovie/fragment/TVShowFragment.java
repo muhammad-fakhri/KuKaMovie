@@ -26,11 +26,19 @@ import id.cybershift.kukamovie.model.MainViewModel;
 public class TVShowFragment extends Fragment {
     private ProgressBar progressBar;
     private TVShowAdapter tvShowAdapter;
+    private Observer<ArrayList<TVShow>> getTVShow = new Observer<ArrayList<TVShow>>() {
+        @Override
+        public void onChanged(@Nullable ArrayList<TVShow> tvShows) {
+            if (tvShows != null) {
+                tvShowAdapter.setData(tvShows);
+                showLoading(false);
+            }
+        }
+    };
 
     public TVShowFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -72,16 +80,6 @@ public class TVShowFragment extends Fragment {
             }
         });
     }
-
-    private Observer<ArrayList<TVShow>> getTVShow = new Observer<ArrayList<TVShow>>() {
-        @Override
-        public void onChanged(@Nullable ArrayList<TVShow> tvShows) {
-            if (tvShows != null) {
-                tvShowAdapter.setData(tvShows);
-                showLoading(false);
-            }
-        }
-    };
 
     private void showLoading(Boolean state) {
         if (state) {

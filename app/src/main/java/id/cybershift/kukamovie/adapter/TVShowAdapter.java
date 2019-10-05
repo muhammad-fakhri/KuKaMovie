@@ -43,6 +43,14 @@ public class TVShowAdapter extends RecyclerView.Adapter<TVShowAdapter.TVShowView
         return data.size();
     }
 
+    public void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
+        this.onItemClickCallback = onItemClickCallback;
+    }
+
+    public interface OnItemClickCallback {
+        void onItemClicked(TVShow data);
+    }
+
     public class TVShowViewHolder extends RecyclerView.ViewHolder {
         ImageView imgPoster;
         TextView tvName, tvDescription;
@@ -70,13 +78,5 @@ public class TVShowAdapter extends RecyclerView.Adapter<TVShowAdapter.TVShowView
                 }
             });
         }
-    }
-
-    public void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
-        this.onItemClickCallback = onItemClickCallback;
-    }
-
-    public interface OnItemClickCallback {
-        void onItemClicked(TVShow data);
     }
 }

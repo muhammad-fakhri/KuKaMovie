@@ -15,8 +15,8 @@ import id.cybershift.kukamovie.R;
  * Implementation of App Widget functionality.
  */
 public class FavoriteWidget extends AppWidgetProvider {
-    private static final String TOAST_ACTION = "id.cybershift.kukamovie.TOAST_ACTION";
     public static final String EXTRA_ITEM = "id.cybershift.kukamovie.EXTRA_ITEM";
+    private static final String TOAST_ACTION = "id.cybershift.kukamovie.TOAST_ACTION";
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {

@@ -2,6 +2,8 @@ package id.cybershift.kukamovie.fragment;
 
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,18 +20,19 @@ import java.util.ArrayList;
 import id.cybershift.kukamovie.DetailActivity;
 import id.cybershift.kukamovie.R;
 import id.cybershift.kukamovie.adapter.FavoriteAdapter;
-import id.cybershift.kukamovie.db.FavoriteHelper;
 import id.cybershift.kukamovie.entity.Favorite;
+import id.cybershift.kukamovie.helper.MappingHelper;
+
+import static id.cybershift.kukamovie.db.DatabaseContract.FavoriteColumns.CONTENT_URI;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class TVShowFavoriteFragment extends Fragment {
     private FavoriteAdapter favoriteAdapter;
-    private FavoriteHelper favoriteHelper;
     TextView emptyTVShowFavorite;
     private static final String EXTRA_STATE_TV = "EXTRA_STATE_TV";
-
+    Uri uriForTVShowFavorite;
 
     public TVShowFavoriteFragment() {
         // Required empty public constructor
@@ -39,6 +42,7 @@ public class TVShowFavoriteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        uriForTVShowFavorite = Uri.parse(CONTENT_URI + "/tvshow");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_tvshow_favorite, container, false);
     }
@@ -46,10 +50,6 @@ public class TVShowFavoriteFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //Set Database Helper
-        favoriteHelper = FavoriteHelper.getInstance(this.getContext());
-        favoriteHelper.open();
-
         //Set Recycler View Adapter
         favoriteAdapter = new FavoriteAdapter();
         favoriteAdapter.notifyDataSetChanged();
@@ -63,7 +63,11 @@ public class TVShowFavoriteFragment extends Fragment {
         emptyTVShowFavorite = view.findViewById(R.id.tvshow_favorite_empty);
 
         //Ambil data dari database
-        ArrayList<Favorite> favorites = favoriteHelper.getAllFavoriteTVShow();
+        Cursor favoriteTVShowDataCursor = getActivity()
+                .getContentResolver()
+                .query(uriForTVShowFavorite, null, null, null, null);
+        //Konversi cursor ke array list
+        ArrayList<Favorite> favorites = MappingHelper.mapFavoriteCursorToArrayList(favoriteTVShowDataCursor);
         favoriteAdapter.setListFavorites(favorites);
 
         //Pasang Click listener ke recycler view
@@ -88,7 +92,11 @@ public class TVShowFavoriteFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ArrayList<Favorite> favorites = favoriteHelper.getAllFavoriteTVShow();
+        Cursor favoriteTVShowDataCursor = getActivity()
+                .getContentResolver()
+                .query(uriForTVShowFavorite, null, null, null, null);
+        //Konversi cursor ke array list
+        ArrayList<Favorite> favorites = MappingHelper.mapFavoriteCursorToArrayList(favoriteTVShowDataCursor);
         if (favorites.size() > 0) {
             showEmptyTVShow(false);
         } else {
@@ -97,15 +105,9 @@ public class TVShowFavoriteFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        favoriteHelper.close();
-    }
-
-    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(EXTRA_STATE_TV, favoriteAdapter.getListNotes());
+        outState.putParcelableArrayList(EXTRA_STATE_TV, favoriteAdapter.getListFavorites());
     }
 
     private void showEmptyTVShow(Boolean state) {
@@ -115,5 +117,4 @@ public class TVShowFavoriteFragment extends Fragment {
             emptyTVShowFavorite.setVisibility(View.GONE);
         }
     }
-
 }

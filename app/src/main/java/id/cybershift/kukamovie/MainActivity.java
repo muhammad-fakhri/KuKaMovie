@@ -21,13 +21,12 @@ import id.cybershift.kukamovie.fragment.TVShowFragment;
 import id.cybershift.kukamovie.search.SearchResultActivity;
 import id.cybershift.kukamovie.setting.SettingActivity;
 
-import static id.cybershift.kukamovie.reminder.ReleaseReminderService.notifId;
-import static id.cybershift.kukamovie.reminder.ReleaseReminderService.stackNotif;
 import static id.cybershift.kukamovie.search.SearchResultActivity.EXTRA_QUERY;
 import static id.cybershift.kukamovie.search.SearchResultActivity.EXTRA_TYPE;
 
 public class MainActivity extends AppCompatActivity {
     boolean typeMovie = true;
+    FavoriteHelper helper;
     private BottomNavigationView.OnNavigationItemSelectedListener onNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        FavoriteHelper helper = FavoriteHelper.getInstance(getApplicationContext());
+        helper = FavoriteHelper.getInstance(getApplicationContext());
         helper.open();
 
         BottomNavigationView navigationView = findViewById(R.id.navigation);
@@ -131,7 +130,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        stackNotif.clear();
-        notifId = 0;
+//        stackNotif.clear();
+//        notifId = 0;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        helper.close();
     }
 }

@@ -27,6 +27,30 @@ public class SearchResultActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     SearchAdapter searchAdapter;
     SearchResultViewModel searchResultViewModel;
+    private Observer<ArrayList<Movie>> getMovie = new Observer<ArrayList<Movie>>() {
+        @Override
+        public void onChanged(@Nullable ArrayList<Movie> movies) {
+            showLoading(false);
+            if (movies.size() > 0) {
+                searchAdapter.setMovie(movies);
+                showNotFound(false);
+            } else {
+                showNotFound(true);
+            }
+        }
+    };
+    private Observer<ArrayList<TVShow>> getTVShow = new Observer<ArrayList<TVShow>>() {
+        @Override
+        public void onChanged(@Nullable ArrayList<TVShow> tvshows) {
+            showLoading(false);
+            if (tvshows.size() > 0) {
+                searchAdapter.setTVShow(tvshows);
+                showNotFound(false);
+            } else {
+                showNotFound(true);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,32 +101,6 @@ public class SearchResultActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    private Observer<ArrayList<Movie>> getMovie = new Observer<ArrayList<Movie>>() {
-        @Override
-        public void onChanged(@Nullable ArrayList<Movie> movies) {
-            showLoading(false);
-            if (movies.size() > 0) {
-                searchAdapter.setMovie(movies);
-                showNotFound(false);
-            } else {
-                showNotFound(true);
-            }
-        }
-    };
-
-    private Observer<ArrayList<TVShow>> getTVShow = new Observer<ArrayList<TVShow>>() {
-        @Override
-        public void onChanged(@Nullable ArrayList<TVShow> tvshows) {
-            showLoading(false);
-            if (tvshows.size() > 0) {
-                searchAdapter.setTVShow(tvshows);
-                showNotFound(false);
-            } else {
-                showNotFound(true);
-            }
-        }
-    };
 
     private void showLoading(Boolean state) {
         if (state) {

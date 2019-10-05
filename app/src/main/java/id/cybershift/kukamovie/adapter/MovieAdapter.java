@@ -25,6 +25,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         data.addAll(items);
         notifyDataSetChanged();
     }
+
     @NonNull
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -42,15 +43,25 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return data.size();
     }
 
+    public void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
+        this.onItemClickCallback = onItemClickCallback;
+    }
+
+    public interface OnItemClickCallback {
+        void onItemClicked(Movie data);
+    }
+
     public class MovieViewHolder extends RecyclerView.ViewHolder {
         ImageView imgPoster;
         TextView tvName, tvDescription;
+
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
             imgPoster = itemView.findViewById(R.id.movie_poster);
             tvName = itemView.findViewById(R.id.movie_name);
             tvDescription = itemView.findViewById(R.id.movie_description);
         }
+
         void bind(final Movie movieItem, MovieViewHolder viewHolder) {
             Glide.with(viewHolder.itemView.getContext())
                     .load("https://image.tmdb.org/t/p/w185" + movieItem.getPoster())
@@ -67,12 +78,5 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 }
             });
         }
-    }
-    public void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
-        this.onItemClickCallback = onItemClickCallback;
-    }
-
-    public interface OnItemClickCallback {
-        void onItemClicked(Movie data);
     }
 }

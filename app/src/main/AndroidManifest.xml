@@ -19,6 +19,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <provider
+            android:name=".provider.FavoriteProvider"
+            android:authorities="id.cybershift.kukamovie"
+            android:exported="true"
+            android:readPermission="id.cybershift.kukamovie.READ_DATABASE"
+            android:writePermission="id.cybershift.kukamovie.WRITE_DATABASE" />
+        <!--            android:enabled="true"-->
+
         <activity android:name=".setting.SettingActivity" />
         <activity android:name=".search.SearchResultActivity" />
         <activity android:name=".DetailActivity" />
@@ -62,7 +70,7 @@
             </intent-filter>
         </service>
         <service
-            android:name="id.cybershift.kukamovie.widget.StackWidgetService"
+            android:name=".widget.StackWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 

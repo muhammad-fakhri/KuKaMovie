@@ -1,6 +1,8 @@
 package id.cybershift.kukamovie;
 
+import android.content.ContentValues;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -24,17 +26,27 @@ import id.cybershift.kukamovie.entity.Favorite;
 import id.cybershift.kukamovie.entity.Movie;
 import id.cybershift.kukamovie.entity.TVShow;
 
+import static id.cybershift.kukamovie.db.DatabaseContract.FavoriteColumns.CONTENT_URI;
+import static id.cybershift.kukamovie.db.DatabaseContract.FavoriteColumns.ID_FROM_API;
+import static id.cybershift.kukamovie.db.DatabaseContract.FavoriteColumns.OVERVIEW;
+import static id.cybershift.kukamovie.db.DatabaseContract.FavoriteColumns.POSTER;
+import static id.cybershift.kukamovie.db.DatabaseContract.FavoriteColumns.RATE;
+import static id.cybershift.kukamovie.db.DatabaseContract.FavoriteColumns.TITLE;
+import static id.cybershift.kukamovie.db.DatabaseContract.FavoriteColumns.TYPE;
+import static id.cybershift.kukamovie.db.DatabaseContract.FavoriteColumns.YEAR;
+
 public class DetailActivity extends AppCompatActivity {
     public static final String EXTRA_MOVIE = "extra_movie";
     public static final String EXTRA_FAVORITE = "extra_favorite";
     public static final String EXTRA_TVSHOW = "extra_tvshow";
-    private FavoriteHelper favoriteHelper;
     ImageView detailPoster;
     TextView detailName, detailYear, detailRate, detailDescription;
     ProgressBar progressBar;
     String title, overview, year, poster, type;
     int idFromAPI, id;
     double rate;
+    private FavoriteHelper favoriteHelper;
+    private Uri uriWithId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,24 +69,26 @@ public class DetailActivity extends AppCompatActivity {
 
         //Ambil data dari parceable
         if (getIntent().getParcelableExtra(EXTRA_MOVIE) != null) {
-            Movie data = getIntent().getParcelableExtra(EXTRA_MOVIE);
+            Movie data_movie = getIntent().getParcelableExtra(EXTRA_MOVIE);
+
+            uriWithId = Uri.parse(CONTENT_URI + "/" + data_movie.getId());
 
             //Ambil Data Detail Filmnya
-            idFromAPI = data.getId();
-            title = data.getTitle();
-            overview = data.getOverview();
-            year = data.getYear();
-            poster = data.getPoster();
-            rate = data.getRate();
+            idFromAPI = data_movie.getId();
+            title = data_movie.getTitle();
+            overview = data_movie.getOverview();
+            year = data_movie.getYear();
+            poster = data_movie.getPoster();
+            rate = data_movie.getRate();
             type = "movie";
 
             //Pasang data ke view
-            detailName.setText(data.getTitle());
-            detailYear.setText(data.getYear());
-            detailRate.setText(String.valueOf(data.getRate()));
-            detailDescription.setText(data.getOverview());
+            detailName.setText(data_movie.getTitle());
+            detailYear.setText(data_movie.getYear());
+            detailRate.setText(String.valueOf(data_movie.getRate()));
+            detailDescription.setText(data_movie.getOverview());
             Glide.with(this)
-                    .load("https://image.tmdb.org/t/p/w185" + data.getPoster())
+                    .load("https://image.tmdb.org/t/p/w185" + data_movie.getPoster())
                     .apply(new RequestOptions().override(200, 250))
                     .listener(new RequestListener<Drawable>() {
                         @Override
@@ -96,6 +110,8 @@ public class DetailActivity extends AppCompatActivity {
             }
         } else if (getIntent().getParcelableExtra(EXTRA_TVSHOW) != null) {
             TVShow data_tvshow = getIntent().getParcelableExtra(EXTRA_TVSHOW);
+
+            uriWithId = Uri.parse(CONTENT_URI + "/" + data_tvshow.getId());
 
             //Ambil Data Detail Acara TV nya
             idFromAPI = data_tvshow.getId();
@@ -134,6 +150,8 @@ public class DetailActivity extends AppCompatActivity {
             }
         } else if (getIntent().getParcelableExtra(EXTRA_FAVORITE) != null) {
             Favorite data_favorite = getIntent().getParcelableExtra(EXTRA_FAVORITE);
+
+            uriWithId = Uri.parse(CONTENT_URI + "/" + data_favorite.getIdFromAPI());
 
             //Ambil Data Detail Favorite nya
             id = data_favorite.getId();
@@ -177,7 +195,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        favoriteHelper.close();
+//        favoriteHelper.close();
     }
 
     @Override
@@ -199,7 +217,8 @@ public class DetailActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.action_favorite) {
             boolean exist = favoriteHelper.checkExistOrNot(idFromAPI);
             if (exist) {
-                long result = favoriteHelper.deleteFavorite(idFromAPI);
+                long result = getContentResolver().delete(uriWithId, null, null);
+//                long result = favoriteHelper.deleteFavorite(idFromAPI);
                 if (result > 0) {
                     Toast.makeText(DetailActivity.this, getString(R.string.unfavorite_toast_success), Toast.LENGTH_SHORT).show();
                     item.setIcon(getResources().getDrawable(R.drawable.ic_favorite_border_white_24dp));
@@ -207,16 +226,17 @@ public class DetailActivity extends AppCompatActivity {
                     Toast.makeText(DetailActivity.this, getString(R.string.unfavorite_toast_fail), Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Favorite favorite = new Favorite();
-                favorite.setIdFromAPI(idFromAPI);
-                favorite.setTitle(title);
-                favorite.setRate(rate);
-                favorite.setPoster(poster);
-                favorite.setYear(year);
-                favorite.setOverview(overview);
-                favorite.setType(type);
-
-                long result = favoriteHelper.insertFavorite(favorite);
+                ContentValues values = new ContentValues();
+                values.put(ID_FROM_API, idFromAPI);
+                values.put(TITLE, title);
+                values.put(RATE, rate);
+                values.put(POSTER, poster);
+                values.put(YEAR, year);
+                values.put(OVERVIEW, overview);
+                values.put(TYPE, type);
+                Uri nice = getContentResolver().insert(CONTENT_URI, values);
+                String res = nice.getLastPathSegment();
+                int result = Integer.parseInt(res);
                 if (result > 0) {
                     Toast.makeText(DetailActivity.this, getString(R.string.favorite_toast_success), Toast.LENGTH_SHORT).show();
                     item.setIcon(getResources().getDrawable(R.drawable.ic_favorite_white_24dp));

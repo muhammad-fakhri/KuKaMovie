@@ -36,12 +36,12 @@ import id.cybershift.kukamovie.entity.Movie;
 import static id.cybershift.kukamovie.BuildConfig.API_KEY;
 
 public class ReleaseReminderService extends JobService {
-    public static int notifId = 0;
-    public static final List<Movie> stackNotif = new ArrayList<>();
     private final static int NOTIFICATION_REQUEST_CODE = 200;
     private final static String GROUP_KEY_MOVIES = "group_key_movies";
     private static final int MAX_NOTIFICATION = 2;
     private static final CharSequence CHANNEL_NAME = "kukamovie channel";
+    private final List<Movie> stackNotif = new ArrayList<>();
+    private int notifId = 0;
 
     @Override
     public boolean onStartJob(JobParameters job) {
@@ -68,8 +68,14 @@ public class ReleaseReminderService extends JobService {
                     String result = new String(responseBody);
                     JSONObject responseObject = new JSONObject(result);
                     JSONArray list = responseObject.getJSONArray("results");
+                    int num;
+                    if (list.length() <= MAX_NOTIFICATION) {
+                        num = list.length();
+                    } else {
+                        num = 3;
+                    }
 
-                    for (int i = 0; i < list.length(); i++) {
+                    for (int i = 0; i < num; i++) {
                         JSONObject movie = list.getJSONObject(i);
                         Movie movieItem = new Movie(movie);
                         stackNotif.add(movieItem);
@@ -78,6 +84,9 @@ public class ReleaseReminderService extends JobService {
                         sendNotifications(getApplicationContext(), title, message, notifId);
                         notifId++;
                     }
+//                    String title = stackNotif.get(notifId).getTitle();
+//                    String message = title + " baru rilis hari ini";
+//                    sendNotifications(getApplicationContext(), title, message, notifId);
 
                     jobFinished(job, false);
                 } catch (Exception e) {
@@ -98,7 +107,7 @@ public class ReleaseReminderService extends JobService {
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Intent intent = new Intent(context, MainActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -106,7 +115,7 @@ public class ReleaseReminderService extends JobService {
 
         if (notifId < MAX_NOTIFICATION) {
             builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_local_movies_24dp)
+                    .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle(title)
                     .setContentText(message)
                     .setContentIntent(pendingIntent)
@@ -117,19 +126,17 @@ public class ReleaseReminderService extends JobService {
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle()
                     .addLine(stackNotif.get(notifId).getTitle() + " Rilis Hari Ini")
                     .addLine(stackNotif.get(notifId - 1).getTitle() + " Rilis Hari Ini")
-                    .setBigContentTitle(notifId + " film baru yang rilis hari ini")
-                    .setSummaryText("Film Rilis Hari Ini");
+                    .setBigContentTitle("Film baru, cek yuk !")
+                    .setSummaryText("Film Baru Rilis Hari Ini");
             builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_local_movies_24dp)
-                    .setContentTitle(title)
-                    .setContentText(message)
+                    .setContentTitle("Film Baru Rilis Hari Ini")
+                    .setContentText("Check them out !")
+                    .setSmallIcon(R.mipmap.ic_launcher)
                     .setGroup(GROUP_KEY_MOVIES)
                     .setGroupSummary(true)
                     .setContentIntent(pendingIntent)
                     .setStyle(inboxStyle)
-                    .setColor(ContextCompat.getColor(context, android.R.color.transparent))
-                    .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
-                    .setSound(alarmSound);
+                    .setAutoCancel(true);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

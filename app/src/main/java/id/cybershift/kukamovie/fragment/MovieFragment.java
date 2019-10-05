@@ -26,6 +26,15 @@ import id.cybershift.kukamovie.model.MainViewModel;
 public class MovieFragment extends Fragment {
     private ProgressBar progressBar;
     private MovieAdapter movieAdapter;
+    private Observer<ArrayList<Movie>> getMovie = new Observer<ArrayList<Movie>>() {
+        @Override
+        public void onChanged(@Nullable ArrayList<Movie> movies) {
+            if (movies != null) {
+                movieAdapter.setData(movies);
+                showLoading(false);
+            }
+        }
+    };
 
     public MovieFragment() {
         // Required empty public constructor
@@ -71,16 +80,6 @@ public class MovieFragment extends Fragment {
             }
         });
     }
-
-    private Observer<ArrayList<Movie>> getMovie = new Observer<ArrayList<Movie>>() {
-        @Override
-        public void onChanged(@Nullable ArrayList<Movie> movies) {
-            if (movies != null) {
-                movieAdapter.setData(movies);
-                showLoading(false);
-            }
-        }
-    };
 
     private void showLoading(Boolean state) {
         if (state) {

@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">KuKaMovie ConsumerApp</string>
+
+    <string name="favorite_description">Favorite Description</string>
+    <string name="favorite_name">Favorite Name</string>
+    <string name="poster_of_the_favorite_item">Poster of the favorite item</string>
+
+    <string name="movie_favorite_is_empty">Movie favorite is empty</string>
+    <string name="tvshow_favorite_is_empty">TVShow favorite is empty</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+</resources>

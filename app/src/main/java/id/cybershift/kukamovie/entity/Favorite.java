@@ -4,6 +4,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Favorite implements Parcelable {
+    public static final Creator<Favorite> CREATOR = new Creator<Favorite>() {
+        @Override
+        public Favorite createFromParcel(Parcel in) {
+            return new Favorite(in);
+        }
+
+        @Override
+        public Favorite[] newArray(int size) {
+            return new Favorite[size];
+        }
+    };
     private int id;
     private int idFromAPI;
     private String title;
@@ -26,18 +37,6 @@ public class Favorite implements Parcelable {
         poster = in.readString();
         type = in.readString();
     }
-
-    public static final Creator<Favorite> CREATOR = new Creator<Favorite>() {
-        @Override
-        public Favorite createFromParcel(Parcel in) {
-            return new Favorite(in);
-        }
-
-        @Override
-        public Favorite[] newArray(int size) {
-            return new Favorite[size];
-        }
-    };
 
     public int getId() {
         return id;

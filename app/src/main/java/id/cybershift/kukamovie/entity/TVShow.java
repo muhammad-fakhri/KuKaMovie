@@ -7,6 +7,17 @@ import android.util.Log;
 import org.json.JSONObject;
 
 public class TVShow implements Parcelable {
+    public static final Creator<TVShow> CREATOR = new Creator<TVShow>() {
+        @Override
+        public TVShow createFromParcel(Parcel in) {
+            return new TVShow(in);
+        }
+
+        @Override
+        public TVShow[] newArray(int size) {
+            return new TVShow[size];
+        }
+    };
     private int id;
     private String title;
     private String overview;
@@ -38,18 +49,6 @@ public class TVShow implements Parcelable {
         year = in.readString();
         poster = in.readString();
     }
-
-    public static final Creator<TVShow> CREATOR = new Creator<TVShow>() {
-        @Override
-        public TVShow createFromParcel(Parcel in) {
-            return new TVShow(in);
-        }
-
-        @Override
-        public TVShow[] newArray(int size) {
-            return new TVShow[size];
-        }
-    };
 
     public int getId() {
         return id;

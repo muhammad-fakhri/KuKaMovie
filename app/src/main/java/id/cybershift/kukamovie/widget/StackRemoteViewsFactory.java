@@ -2,6 +2,7 @@ package id.cybershift.kukamovie.widget;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Binder;
@@ -16,18 +17,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import id.cybershift.kukamovie.R;
-import id.cybershift.kukamovie.db.FavoriteHelper;
 import id.cybershift.kukamovie.entity.Favorite;
+import id.cybershift.kukamovie.helper.MappingHelper;
+
+import static id.cybershift.kukamovie.db.DatabaseContract.FavoriteColumns.CONTENT_URI;
 
 public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     private final List<Bitmap> widgetItems = new ArrayList<>();
     private final Context context;
-    private FavoriteHelper favoriteHelper;
     private ArrayList<Favorite> listFavorite = new ArrayList<>();
 
     StackRemoteViewsFactory(Context context) {
         this.context = context;
-        favoriteHelper = FavoriteHelper.getInstance(context);
     }
 
     @Override
@@ -37,10 +38,15 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public void onDataSetChanged() {
-        favoriteHelper.open();
         final long identityToken = Binder.clearCallingIdentity();
 
-        listFavorite.addAll(favoriteHelper.getAllFavoriteItem());
+        //Ambil data dari database
+//        Cursor favoriteItem = favoriteHelper.getAllFavoriteItem();
+        Cursor favoriteItem = context.getContentResolver().query(CONTENT_URI, null, null, null, null);
+        //Konversi cursor ke array list
+        ArrayList<Favorite> favorites = MappingHelper.mapFavoriteCursorToArrayList(favoriteItem);
+
+        listFavorite.addAll(favorites);
         URL imageURL = null;
         for (int i = 0; i < listFavorite.size(); i++) {
             try {
@@ -56,7 +62,6 @@ public class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFa
         }
 
         Binder.restoreCallingIdentity(identityToken);
-        favoriteHelper.close();
     }
 
     @Override
