@@ -1,7 +1,12 @@
 # KuKaMovie
 
-## KuKaMovie is a movie catalogue application that can fetch data from MovieDB API and favoriting any movie or TV show.
+## Description
+KuKaMovie is a movie catalogue application that can fetch data from MovieDB API and favoriting any movie or TV show. This project is the final project to fulfill the "Menjadi Android Developer Expert" by Dicoding. Use Android Native.
 
-## This project is the final project to fulfill the "Menjadi Android Developer Expert" by Dicoding
+## Developer Team
+Muhammad Fakhri ([@muhammad-fakhri](https://github.com/muhammad-fakhri))
 
-## Use android native
+## Development Tools
+1. Postman
+2. Android Studio
+3. Android SDK
